@@ -4,7 +4,6 @@ FROM node:22-slim AS base
 FROM base AS deps
 
 WORKDIR /app
-
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -17,7 +16,7 @@ COPY . .
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
