@@ -2,6 +2,7 @@
 export type GamePhase = "waiting" | "inProgress" | "revealed";
 
 export interface Player {
+  id: string;
   name: string;
   number?: number;
 }
@@ -10,6 +11,7 @@ export interface GameState {
   phase: GamePhase;
   players: Player[];
   myName: string;
+  myId?: string;
   myNumber?: number;
   connected: boolean;
 }
@@ -17,6 +19,7 @@ export interface GameState {
 // サーバーから受け取るメッセージの型定義（受信イベント）
 export type ServerMessage =
   | { type: "connected" }
+  | { type: "assigned"; playerId: string }
   | {
       type: "set-players";
       roomId: string;

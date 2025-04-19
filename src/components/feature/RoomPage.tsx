@@ -40,7 +40,7 @@ export default function RoomPage({ params: { roomId } }: RoomPageProps) {
 
         <PlayerList
           players={state.players}
-          myName={state.myName}
+          myId={state.myId}
           phase={state.phase}
         />
 
@@ -62,7 +62,7 @@ export default function RoomPage({ params: { roomId } }: RoomPageProps) {
           <GameView
             gamePhase={state.phase}
             players={state.players}
-            myName={state.myName}
+            myId={state.myId}
             myNumber={state.myNumber}
             onReveal={sendRevealNumber}
             onReset={sendResetGame}

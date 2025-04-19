@@ -6,11 +6,11 @@ import { Badge } from "../ui/badge";
 
 interface PlayerListProps {
   players: Player[];
-  myName?: string;
+  myId?: string;
   phase: GamePhase;
 }
 
-const PlayerList: React.FC<PlayerListProps> = ({ players, myName, phase }) => {
+const PlayerList: React.FC<PlayerListProps> = ({ players, myId, phase }) => {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -20,12 +20,12 @@ const PlayerList: React.FC<PlayerListProps> = ({ players, myName, phase }) => {
         <ul className="space-y-1">
           {players.map((player) => (
             <li
-              key={player.name}
+              key={player.id}
               className="flex justify-between items-center border-b pb-1 text-sm"
             >
               <span>
                 {player.name}
-                {player.name === myName && " (自分)"}
+                {player.id === myId && " (自分)"}
               </span>
               <span className="font-mono">
                 {phase === "waiting" ? null : (

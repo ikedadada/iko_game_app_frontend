@@ -12,6 +12,7 @@ import type {
 type Action =
   | { type: "SET_MY_NAME"; name: string }
   | { type: "CONNECTED" }
+  | { type: "SET_MY_ID"; id: string }
   | { type: "SET_PLAYERS"; players: Player[] }
   | { type: "GAME_STARTED"; number: number }
   | { type: "SHOW_OWN_NUMBER"; canSee: Record<string, number> }
@@ -25,6 +26,12 @@ function gameReducer(state: GameState, action: Action): GameState {
       return { ...state, myName: action.name };
     case "CONNECTED":
       return { ...state, connected: true };
+    case "SET_MY_ID":
+      // プレイヤーIDを設定
+      return {
+        ...state,
+        myId: action.id,
+      };
     case "SET_PLAYERS": {
       const { players } = action;
 
@@ -50,7 +57,7 @@ function gameReducer(state: GameState, action: Action): GameState {
       const updatedPlayers = state.players.map((player) => {
         return {
           ...player,
-          number: canSee[player.name],
+          number: canSee[player.id],
         };
       });
 
@@ -113,6 +120,13 @@ export function useRoomSocket(roomId: string) {
       case "connected":
         // 接続成功時の処理
         dispatch({ type: "CONNECTED" });
+        break;
+      case "assigned":
+        // プレイヤーIDの割り当て
+        dispatch({
+          type: "SET_MY_ID",
+          id: data.playerId,
+        });
         break;
       case "set-players":
         // 初期状態を受信（参加時）

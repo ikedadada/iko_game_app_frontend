@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 interface GameViewProps {
   gamePhase: GamePhase;
   players: Player[];
-  myName?: string;
+  myId?: string;
   myNumber?: number;
   onReveal: () => void;
   onReset: () => void;
@@ -17,12 +17,12 @@ interface GameViewProps {
 const GameView: React.FC<GameViewProps> = ({
   gamePhase,
   players,
-  myName,
+  myId,
   myNumber,
   onReveal,
   onReset,
 }) => {
-  const selfPlayer = players.find((p) => p.name === myName);
+  const selfPlayer = players.find((p) => p.id === myId);
   const selfRevealed = selfPlayer?.number !== undefined;
 
   return (
