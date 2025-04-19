@@ -147,6 +147,7 @@ export function useRoomSocket(roomId: string) {
 
   // ゲームルームに参加（WebSocket接続開始）
   const joinRoom = (name: string) => {
+    console.log("env", process.env);
     if (socketRef.current) {
       console.warn("Already connected to the WebSocket server.");
       return; // 既に接続済みの場合は二重接続しない
