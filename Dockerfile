@@ -39,6 +39,8 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT=3000
+# TODO: Update this to your backend URL
+ENV NEXT_PUBLIC_WS_URL="https://iko-game-app-backend.onrender.com"
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
