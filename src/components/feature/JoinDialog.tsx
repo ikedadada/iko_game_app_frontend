@@ -17,10 +17,9 @@ interface JoinDialogProps {
 export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
   const [name, setName] = useState("");
 
-  const handleSubmit = () => {
-    console.log("参加ボタンが押されました");
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (name.trim()) {
-      console.log("参加する名前:", name);
       onJoin(name.trim());
     }
   };
@@ -31,16 +30,16 @@ export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
         <DialogHeader>
           <DialogTitle>名前を入力してください</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="プレイヤー名"
           />
-          <Button onClick={handleSubmit} disabled={!name.trim()}>
+          <Button type="submit" disabled={!name.trim()}>
             参加
           </Button>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

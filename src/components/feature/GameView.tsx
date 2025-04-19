@@ -30,29 +30,32 @@ const GameView: React.FC<GameViewProps> = ({
       <CardHeader>
         <CardTitle className="text-lg">ゲームの進行状況</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2">
         {gamePhase === "inProgress" && (
-          <div className="space-y-2">
+          <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
               ゲームが開始されました。各プレイヤーには秘密の数字が割り当てられています。
             </p>
-            {myNumber !== undefined ? (
-              <p>
-                あなたの数字:{" "}
-                <span className="font-bold text-xl">{myNumber}</span>
-              </p>
-            ) : (
-              <p className="text-muted-foreground">
-                あなたの数字を取得しています...
-              </p>
-            )}
-            {!selfRevealed ? (
-              <Button onClick={onReveal}>自分の数字を開示する</Button>
-            ) : (
-              <p className="text-muted-foreground">
-                あなたの数字は開示済みです。他のプレイヤーを待っています...
-              </p>
-            )}
+            <hr />
+            <div className="flex">
+              {myNumber !== undefined ? (
+                <div className="flex-grow-2">
+                  あなたの数字:{" "}
+                  <span className="font-bold text-xl">{myNumber}</span>
+                </div>
+              ) : (
+                <div className="flex-grow-2 text-muted-foreground">
+                  あなたの数字を取得しています...
+                </div>
+              )}
+              <div className="space-y-2">
+                {!selfRevealed ? (
+                  <Button onClick={onReveal}>自分の数字を開示する</Button>
+                ) : (
+                  <Button disabled>数字を開示しました</Button>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -61,8 +64,12 @@ const GameView: React.FC<GameViewProps> = ({
             <p className="text-lg font-semibold">
               全てのプレイヤーが数字を開示しました！
             </p>
-            <p className="text-muted-foreground">ゲーム終了です。</p>
-            <Button onClick={onReset}>もう一度やる</Button>
+            <div className="flex">
+              <div className="flex-grow-2 text-muted-foreground">
+                ゲーム終了です。
+              </div>
+              <Button onClick={onReset}>もう一度やる</Button>
+            </div>
           </div>
         )}
       </CardContent>

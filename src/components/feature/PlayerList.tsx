@@ -2,6 +2,7 @@
 import React from "react";
 import type { Player, GamePhase } from "@/types/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "../ui/badge";
 
 interface PlayerListProps {
   players: Player[];
@@ -20,18 +21,23 @@ const PlayerList: React.FC<PlayerListProps> = ({ players, myName, phase }) => {
           {players.map((player) => (
             <li
               key={player.name}
-              className="flex justify-between border-b pb-1 text-sm"
+              className="flex justify-between items-center border-b pb-1 text-sm"
             >
               <span>
                 {player.name}
                 {player.name === myName && " (自分)"}
               </span>
               <span className="font-mono">
-                {phase === "waiting"
-                  ? ""
-                  : player.number !== undefined
-                    ? player.number
-                    : "[非公開]"}
+                {phase === "waiting" ? null : (
+                  <Badge
+                    variant={
+                      player.number !== undefined ? "default" : "outline"
+                    }
+                    className="w-8 h-8 text-center"
+                  >
+                    {player.number !== undefined ? player.number : "?"}
+                  </Badge>
+                )}
               </span>
             </li>
           ))}

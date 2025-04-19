@@ -17,17 +17,27 @@ export default function Home() {
   };
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Button onClick={() => handleCreateRoom()}>ルームを作成</Button>
-        <p className="text-muted-foreground">またはルームIDを入力して参加</p>
-        <Input
-          value={joinRoomId}
-          onChange={(e) => setJoinRoomId(e.target.value)}
-          placeholder="ルームIDを入力"
-        />
-        <Button onClick={() => handleJoinRoom(joinRoomId)}>ルームに参加</Button>
-      </main>
+    <div className="grid justify-items-center min-h-screen min-w-2xl">
+      <div className="flex gap-[32px] row-start w-full flex-col items-center">
+        <div className="flex flex-col gap-8 w-full max-w-md">
+          <h1 className="text-3xl font-bold text-center mb-2">Iko Online</h1>
+          <div className="text-lg text-muted-foreground text-center">
+            オンラインであそべる「いこ」
+          </div>
+          <Button onClick={() => handleCreateRoom()}>ルームを作成</Button>
+          <div className="text-muted-foreground text-center">
+            またはルームIDを入力して参加
+          </div>
+          <Input
+            value={joinRoomId}
+            onChange={(e) => setJoinRoomId(e.target.value)}
+            placeholder="ルームIDを入力"
+          />
+          <Button onClick={() => handleJoinRoom(joinRoomId)}>
+            ルームに参加
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
