@@ -8,26 +8,21 @@ import type {
   ClientMessage,
 } from "@/types/types";
 
-// GameStateの初期値
-const initialState: GameState = {
-  phase: "waiting",
-  players: [],
-  myName: "",
-  myNumber: undefined,
-  connected: false,
-};
-
 // Reducerで扱うアクションの型定義
 type Action =
+  | { type: "SET_MY_NAME"; name: string }
   | { type: "CONNECTED" }
   | { type: "SET_PLAYERS"; players: Player[] }
   | { type: "GAME_STARTED"; number: number }
   | { type: "SHOW_OWN_NUMBER"; canSee: Record<string, number> }
-  | { type: "PLAYER_REVEALED"; playerId: string; number: number };
+  | { type: "RESET_GAME" }
+  | { type: "GAME_ALREADY_STARTED" };
 
 // GameStateを更新するreducer関数
 function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
+    case "SET_MY_NAME":
+      return { ...state, myName: action.name };
     case "CONNECTED":
       return { ...state, connected: true };
     case "SET_PLAYERS": {
@@ -67,16 +62,38 @@ function gameReducer(state: GameState, action: Action): GameState {
         phase: allRevealed ? "revealed" : "inProgress",
       };
     }
+    case "RESET_GAME":
+      // ゲームをリセット
+      return {
+        ...state,
+        phase: "waiting",
+        players: state.players.map((player) => ({
+          ...player,
+          number: undefined,
+        })),
+      };
+    case "GAME_ALREADY_STARTED":
+      // ゲームが既に開始されている場合の処理
+      return {
+        ...state,
+        phase: "waiting",
+        myName: "",
+        myNumber: undefined,
+        players: [],
+      };
     default:
       return state;
   }
 }
 
 // ゲームルーム用カスタムフック
-export function useRoomSocket(roomId: string, name: string) {
+export function useRoomSocket(roomId: string) {
   const [state, dispatch] = useReducer(gameReducer, {
-    ...initialState,
-    myName: name,
+    phase: "waiting",
+    players: [],
+    myName: "",
+    myNumber: undefined,
+    connected: false,
   });
   const socketRef = useRef<WebSocket | null>(null);
 
@@ -113,10 +130,19 @@ export function useRoomSocket(roomId: string, name: string) {
           canSee: data.canSee,
         });
         break;
+      case "reset-game":
+        // ゲームのリセット
+        dispatch({ type: "RESET_GAME" });
+        break;
       default:
         // 未知のメッセージタイプは無視する
         break;
     }
+  };
+
+  // 名前を設定する関数
+  const setMyName = (name: string) => {
+    dispatch({ type: "SET_MY_NAME", name });
   };
 
   // ゲームルームに参加（WebSocket接続開始）
@@ -152,11 +178,19 @@ export function useRoomSocket(roomId: string, name: string) {
     socketRef.current.send(JSON.stringify(msg));
   };
 
+  const sendResetGame = () => {
+    if (!socketRef.current) return;
+    const msg: ClientMessage = { type: "reset-game", roomId };
+    socketRef.current.send(JSON.stringify(msg));
+  };
+
   // フックから現在の状態と操作関数を返す
   return {
     state,
+    setMyName,
     joinRoom,
     sendStartGame,
     sendRevealNumber,
+    sendResetGame,
   };
 }

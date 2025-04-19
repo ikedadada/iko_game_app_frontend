@@ -24,8 +24,8 @@ export type ServerMessage =
     }
   | { type: "start-game"; number: number }
   | { type: "show-own-number"; canSee: Record<string, number> }
-  | { type: "game-already-started" }
-  | { type: "reset-game" };
+  | { type: "reset-game" }
+  | { type: "game-already-started" };
 
 // サーバーへ送信するメッセージの型定義（送信イベント）
 export type ClientMessage =

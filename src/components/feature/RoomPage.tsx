@@ -1,24 +1,26 @@
-// page.tsx (RoomPage) – ゲームルームページコンポーネント
 "use client";
-import { useState } from "react";
+
 import { useRoomSocket } from "@/components/hooks/useRoomSocket";
 import { JoinDialog } from "./JoinDialog";
 import PlayerList from "./PlayerList";
 import GameView from "./GameView";
+import { Button } from "@/components/ui/button";
 
 interface RoomPageProps {
   params: { roomId: string };
 }
 
 export default function RoomPage({ params: { roomId } }: RoomPageProps) {
-  const [myName, setMyName] = useState("");
-  const { state, joinRoom, sendStartGame, sendRevealNumber } = useRoomSocket(
-    roomId,
-    myName
-  );
+  const {
+    state,
+    setMyName,
+    joinRoom,
+    sendStartGame,
+    sendRevealNumber,
+    sendResetGame,
+  } = useRoomSocket(roomId);
 
-  // まだ未参加（WebSocket未接続）の場合は参加ダイアログを表示
-  if (!state.connected || !myName) {
+  if (!state.connected || !state.myName) {
     return (
       <JoinDialog
         onJoin={(name) => {
@@ -29,38 +31,44 @@ export default function RoomPage({ params: { roomId } }: RoomPageProps) {
     );
   }
 
-  // 参加後のメイン画面表示
   return (
-    <div className="room-page">
-      {/* プレイヤー一覧 */}
-      <PlayerList
-        players={state.players}
-        myName={state.myName}
-        phase={state.phase}
-      />
+    <div className="room-page max-w-2xl mx-auto p-6 space-y-6">
+      <div className="flex flex-col gap-4">
+        <h1 className="text-3xl font-bold text-center mb-2">
+          ルームID: {roomId}
+        </h1>
 
-      {/* ゲーム未開始の場合、開始ボタンまたは待機メッセージを表示 */}
-      {state.phase === "waiting" && state.players.length > 1 && (
-        <div className="waiting-panel">
-          <button onClick={sendStartGame}>ゲームを開始する</button>
-        </div>
-      )}
-      {state.phase === "waiting" && state.players.length <= 1 && (
-        <div className="waiting-panel">
-          <p>他のプレイヤーを待っています...</p>
-        </div>
-      )}
-
-      {/* ゲーム開始後のビュー */}
-      {state.phase !== "waiting" && (
-        <GameView
-          gamePhase={state.phase}
+        <PlayerList
           players={state.players}
           myName={state.myName}
-          myNumber={state.myNumber}
-          onReveal={sendRevealNumber}
+          phase={state.phase}
         />
-      )}
+
+        {state.phase === "waiting" && state.players.length > 1 && (
+          <div className="text-center">
+            <Button onClick={sendStartGame} size="lg">
+              ゲームを開始する
+            </Button>
+          </div>
+        )}
+
+        {state.phase === "waiting" && state.players.length <= 1 && (
+          <div className="text-center text-muted-foreground">
+            他のプレイヤーを待っています...
+          </div>
+        )}
+
+        {state.phase !== "waiting" && (
+          <GameView
+            gamePhase={state.phase}
+            players={state.players}
+            myName={state.myName}
+            myNumber={state.myNumber}
+            onReveal={sendRevealNumber}
+            onReset={sendResetGame}
+          />
+        )}
+      </div>
     </div>
   );
 }

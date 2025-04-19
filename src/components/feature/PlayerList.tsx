@@ -1,7 +1,7 @@
-// PlayerList.tsx – プレイヤー一覧表示コンポーネント
 "use client";
 import React from "react";
 import type { Player, GamePhase } from "@/types/types";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface PlayerListProps {
   players: Player[];
@@ -11,23 +11,33 @@ interface PlayerListProps {
 
 const PlayerList: React.FC<PlayerListProps> = ({ players, myName, phase }) => {
   return (
-    <div className="player-list">
-      <h3>プレイヤー一覧</h3>
-      <ul>
-        {players.map((player) => (
-          <li key={player.name}>
-            {player.name}
-            {player.name === myName && " (自分)"}
-            {
-              phase !== "waiting" &&
-                (player.number !== undefined // 数字が開示済みかどうか
-                  ? `: ${player.number}` // 開示済みなら数字を表示
-                  : ": [非公開]") // 未開示なら伏せた表示
-            }
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-lg">参加者一覧</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-1">
+          {players.map((player) => (
+            <li
+              key={player.name}
+              className="flex justify-between border-b pb-1 text-sm"
+            >
+              <span>
+                {player.name}
+                {player.name === myName && " (自分)"}
+              </span>
+              <span className="font-mono">
+                {phase === "waiting"
+                  ? ""
+                  : player.number !== undefined
+                    ? player.number
+                    : "[非公開]"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 };
 
