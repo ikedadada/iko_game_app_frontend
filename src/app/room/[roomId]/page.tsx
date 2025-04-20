@@ -8,7 +8,7 @@ export default function Page() {
     throw new Error("Invalid roomId");
   }
   return (
-    <div className="grid justify-items-center min-h-screen">
+    <div className="flex gap-[32px] row-start w-full flex-col items-center pt-10">
       <div className="flex gap-[32px] row-start w-full">
         <RoomPage params={{ roomId }} />
       </div>

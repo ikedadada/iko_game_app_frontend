@@ -56,7 +56,7 @@ export default function RootLayout({
           </div>
         </header>
 
-        <main className="w-full mx-auto pt-10">{children}</main>
+        <main className="w-full mx-auto pt-5 px-5">{children}</main>
       </body>
     </html>
   );
