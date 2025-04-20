@@ -7,6 +7,8 @@ import type {
   ServerMessage,
   ClientMessage,
 } from "@/types/types";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // Reducerで扱うアクションの型定義
 type Action =
@@ -16,8 +18,7 @@ type Action =
   | { type: "SET_PLAYERS"; players: Player[] }
   | { type: "GAME_STARTED"; number: number }
   | { type: "SHOW_OWN_NUMBER"; canSee: Record<string, number> }
-  | { type: "RESET_GAME" }
-  | { type: "GAME_ALREADY_STARTED" };
+  | { type: "RESET_GAME" };
 
 // GameStateを更新するreducer関数
 function gameReducer(state: GameState, action: Action): GameState {
@@ -79,15 +80,6 @@ function gameReducer(state: GameState, action: Action): GameState {
           number: undefined,
         })),
       };
-    case "GAME_ALREADY_STARTED":
-      // ゲームが既に開始されている場合の処理
-      return {
-        ...state,
-        phase: "waiting",
-        myName: "",
-        myNumber: undefined,
-        players: [],
-      };
     default:
       return state;
   }
@@ -95,6 +87,7 @@ function gameReducer(state: GameState, action: Action): GameState {
 
 // ゲームルーム用カスタムフック
 export function useRoomSocket(roomId: string) {
+  const router = useRouter();
   const [state, dispatch] = useReducer(gameReducer, {
     phase: "waiting",
     players: [],
@@ -148,6 +141,20 @@ export function useRoomSocket(roomId: string) {
         // ゲームのリセット
         dispatch({ type: "RESET_GAME" });
         break;
+      case "game-already-started":
+        toast.error(
+          "ゲームは既に開始されています。ゲーム終了後に再アクセスしてください。",
+          {
+            position: "bottom-center",
+            action: {
+              label: "トップに戻る",
+              onClick: () => {
+                router.push("/");
+              },
+            },
+          }
+        );
+        break;
       default:
         // 未知のメッセージタイプは無視する
         break;
@@ -161,7 +168,6 @@ export function useRoomSocket(roomId: string) {
 
   // ゲームルームに参加（WebSocket接続開始）
   const joinRoom = (name: string) => {
-    console.log("env", process.env);
     if (socketRef.current) {
       console.warn("Already connected to the WebSocket server.");
       return; // 既に接続済みの場合は二重接続しない
