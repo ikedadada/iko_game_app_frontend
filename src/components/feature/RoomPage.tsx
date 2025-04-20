@@ -20,7 +20,7 @@ export default function RoomPage({ params: { roomId } }: RoomPageProps) {
     sendResetGame,
   } = useRoomSocket(roomId);
 
-  if (!state.connected || !state.myName) {
+  if (!state.connected || !state.myName || !state.myId) {
     return (
       <JoinDialog
         onJoin={(name) => {

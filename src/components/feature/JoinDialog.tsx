@@ -18,10 +18,13 @@ interface JoinDialogProps {
 export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
+    if (isSubmitted) return;
     if (name.trim()) {
+      setIsSubmitted(true);
       onJoin(name.trim());
     }
   };
@@ -42,9 +45,13 @@ export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
             onChange={(e) => setName(e.target.value)}
             placeholder="プレイヤー名"
           />
-          <Button type="submit" disabled={!name.trim()}>
-            参加
-          </Button>
+          {!isSubmitted ? (
+            <Button type="submit" disabled={!name.trim()}>
+              参加
+            </Button>
+          ) : (
+            <Button disabled>参加中...</Button>
+          )}
         </form>
       </DialogContent>
     </Dialog>
