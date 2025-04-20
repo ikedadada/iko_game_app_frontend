@@ -9,12 +9,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface JoinDialogProps {
   onJoin: (name: string) => void;
 }
 
 export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
+  const router = useRouter();
   const [name, setName] = useState("");
 
   const handleSubmit = (e?: React.FormEvent) => {
@@ -24,8 +26,12 @@ export const JoinDialog: React.FC<JoinDialogProps> = ({ onJoin }) => {
     }
   };
 
+  const onClose = () => {
+    router.push("/");
+  };
+
   return (
-    <Dialog open>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>名前を入力してください</DialogTitle>
