@@ -17,7 +17,7 @@ export default function Home() {
   };
 
   return (
-    <div className="grid justify-items-center min-h-screen min-w-2xl">
+    <div className="grid justify-items-center min-h-screen">
       <div className="flex gap-[32px] row-start w-full flex-col items-center">
         <div className="flex flex-col gap-8 w-full max-w-md">
           <h1 className="text-3xl font-bold text-center mb-2">Iko Online</h1>
